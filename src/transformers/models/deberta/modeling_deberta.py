@@ -650,6 +650,7 @@ class DisentangledSelfAttention(nn.Module):
 
 
         """
+        print("relative_embeddings (1): ", rel_embeddings.shape)
         if query_states is None:
             qp = self.in_proj(hidden_states)  # .split(self.all_head_size, dim=-1)
             query_layer, key_layer, value_layer = self.transpose_for_scores(qp).chunk(3, dim=-1)
