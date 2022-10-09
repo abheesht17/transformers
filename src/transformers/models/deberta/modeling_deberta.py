@@ -688,13 +688,17 @@ class DisentangledSelfAttention(nn.Module):
 
         # bxhxlxd
         if self.talking_head:
+            print("SHOULD NOT BE PRINTED")
             attention_scores = self.head_logits_proj(attention_scores.permute(0, 2, 3, 1)).permute(0, 3, 1, 2)
 
+           
         attention_probs = XSoftmax.apply(attention_scores, attention_mask, -1)
         attention_probs = self.dropout(attention_probs)
         if self.talking_head:
+            print("SHOULD NOT BE PRINTED")
             attention_probs = self.head_weights_proj(attention_probs.permute(0, 2, 3, 1)).permute(0, 3, 1, 2)
 
+        print("attention_probs: ", attention_probs.shape)
         context_layer = torch.matmul(attention_probs, value_layer)
         context_layer = context_layer.permute(0, 2, 1, 3).contiguous()
         new_context_layer_shape = context_layer.size()[:-2] + (-1,)
