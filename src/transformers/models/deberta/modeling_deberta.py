@@ -703,6 +703,7 @@ class DisentangledSelfAttention(nn.Module):
         context_layer = context_layer.permute(0, 2, 1, 3).contiguous()
         new_context_layer_shape = context_layer.size()[:-2] + (-1,)
         context_layer = context_layer.view(new_context_layer_shape)
+        print("context->", context_layer.shape)
         if output_attentions:
             return (context_layer, attention_probs)
         else:
