@@ -718,10 +718,12 @@ class DisentangledSelfAttention(nn.Module):
 
         att_span = min(max(query_layer.size(-2), key_layer.size(-2)), self.max_relative_positions)
         relative_pos = relative_pos.long().to(query_layer.device)
+        print("relative_pos (1): ", relative_pos.shape)
+        print("rel_embeddings (2): ", rel_embeddings.shape)
         rel_embeddings = rel_embeddings[
             self.max_relative_positions - att_span : self.max_relative_positions + att_span, :
         ].unsqueeze(0)
-
+        print("rel_embeddings (3): ", rel_embeddings.shape)
         score = 0
 
         # content->position
