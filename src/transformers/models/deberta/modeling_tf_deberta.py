@@ -587,7 +587,7 @@ class TFDebertaDisentangledSelfAttention(tf.keras.layers.Layer):
 
         """
         tf.print("hidden_states: ", hidden_states, hidden_states.shape)
-        tf.print("query_states: ", query_states, query_states.shape)
+        # tf.print("query_states: ", query_states, query_states.shape)
         if query_states is None:
             qp = self.in_proj(hidden_states)  # .split(self.all_head_size, dim=-1)
             query_layer, key_layer, value_layer = tf.split(
