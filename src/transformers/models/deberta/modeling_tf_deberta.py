@@ -621,6 +621,9 @@ class TFDebertaDisentangledSelfAttention(tf.keras.layers.Layer):
         query_layer = query_layer + self.transpose_for_scores(self.q_bias[None, None, :])
         value_layer = value_layer + self.transpose_for_scores(self.v_bias[None, None, :])
 
+        tf.print("query: ", query_layer, query_layer.shape)
+        tf.print("key: ", key_layer, key_layer.shape)
+        tf.print("value: ", value_layer, value_layer.shape)
         rel_att = None
         # Take the dot product between "query" and "key" to get the raw attention scores.
         scale_factor = 1 + len(self.pos_att_type)
