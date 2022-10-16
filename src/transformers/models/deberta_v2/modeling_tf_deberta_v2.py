@@ -359,6 +359,7 @@ class TFDebertaV2Encoder(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         if self.relative_attention:
+            tf.print("self.pos_ebd_size in TFDebertaV2Encoder build: ", self.pos_ebd_size)
             self.rel_embeddings = self.add_weight(
                 name="rel_embeddings.weight",
                 shape=[self.pos_ebd_size, self.config.hidden_size],
