@@ -741,10 +741,12 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
                 self.transpose_for_scores(self.query_proj(rel_embeddings), self.num_attention_heads),
                 [shape_list(query_layer)[0] // self.num_attention_heads, 1, 1],
             )
+            tf.print(pos_query_layer.shape)
             pos_key_layer = tf.tile(
                 self.transpose_for_scores(self.key_proj(rel_embeddings), self.num_attention_heads),
                 [shape_list(query_layer)[0] // self.num_attention_heads, 1, 1],
             )
+            tf.print(pos_key_layer.shape)
         else:
             if "c2p" in self.pos_att_type:
                 pos_key_layer = tf.tile(
