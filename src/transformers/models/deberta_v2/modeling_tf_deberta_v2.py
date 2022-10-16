@@ -342,10 +342,13 @@ class TFDebertaV2Encoder(tf.keras.layers.Layer):
                 self.max_relative_positions = config.max_position_embeddings
 
             self.position_buckets = getattr(config, "position_buckets", -1)
+            tf.print("self.position_buckets in TFDebertaV2Encoder: ", self.position_buckets)
             self.pos_ebd_size = self.max_relative_positions * 2
+            tf.print("self.pos_ebd_size in TFDebertaV2Encoder: ", self.pos_ebd_size)
 
             if self.position_buckets > 0:
                 self.pos_ebd_size = self.position_buckets * 2
+            tf.print("self.pos_ebd_size in TFDebertaV2Encoder: ", self.pos_ebd_size)
 
         self.norm_rel_ebd = [x.strip() for x in getattr(config, "norm_rel_ebd", "none").lower().split("|")]
 
