@@ -747,15 +747,17 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
             rel_embeddings[self.pos_ebd_size - att_span : self.pos_ebd_size + att_span, :], 0
         )
         if self.share_att_key:
-            pos_query_layer = self.transpose_for_scores(self.query_proj(rel_embeddings), self.num_attention_heads)
-            tf.print("1: ", pos_query_layer.shape)
+            pos_query_layer = self.query_proj(rel_embeddings)
+            tf.print("pos_query: ", pos_query, pos_query_layer.shape)
+            pos_query_layer = self.transpose_for_scores(pos_query_layer, self.num_attention_heads)
             pos_query_layer = tf.tile(pos_query_layer, [shape_list(query_layer)[0] // self.num_attention_heads, 1, 1])
-            tf.print("2: ", pos_query_layer.shape)
+
+            pos_key_layer = self.key_proj(rel_embeddings)
+            tf.print("pos_key: ", pos_key_layer, pos_key_layer.shape)
             pos_key_layer = tf.tile(
-                self.transpose_for_scores(self.key_proj(rel_embeddings), self.num_attention_heads),
+                self.transpose_for_scores(pos_key_layer, self.num_attention_heads),
                 [shape_list(query_layer)[0] // self.num_attention_heads, 1, 1],
             )
-            tf.print(pos_key_layer.shape)
         else:
             if "c2p" in self.pos_att_type:
                 pos_key_layer = tf.tile(
