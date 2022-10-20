@@ -748,7 +748,7 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         )
         if self.share_att_key:
             pos_query_layer = self.query_proj(rel_embeddings)
-            tf.print("pos_query: ", pos_query, pos_query_layer.shape)
+            tf.print("pos_query: ", pos_query_layer, pos_query_layer.shape)
             pos_query_layer = self.transpose_for_scores(pos_query_layer, self.num_attention_heads)
             pos_query_layer = tf.tile(pos_query_layer, [shape_list(query_layer)[0] // self.num_attention_heads, 1, 1])
 
