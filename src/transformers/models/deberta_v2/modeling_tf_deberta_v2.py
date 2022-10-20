@@ -672,10 +672,10 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         query_layer = self.query_proj(query_states)
         tf.print("query: ", query_layer, query_layer.shape)
         query_layer = self.transpose_for_scores(query_layer, self.num_attention_heads)
-        key_layer = self.key_proj(key_states)
+        key_layer = self.key_proj(hidden_states)
         tf.print("key: ", key_layer, key_layer.shape)
         key_layer = self.transpose_for_scores(key_layer, self.num_attention_heads)
-        value_layer = self.value_proj(value_states)
+        value_layer = self.value_proj(hidden_states)
         tf.print("value: ", value_layer, value_layer.shape)
         value_layer = self.transpose_for_scores(value_layer, self.num_attention_heads)
 
