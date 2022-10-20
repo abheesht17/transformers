@@ -669,9 +669,15 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         """
         if query_states is None:
             query_states = hidden_states
-        query_layer = self.transpose_for_scores(self.query_proj(query_states), self.num_attention_heads)
-        key_layer = self.transpose_for_scores(self.key_proj(hidden_states), self.num_attention_heads)
-        value_layer = self.transpose_for_scores(self.value_proj(hidden_states), self.num_attention_heads)
+        query_layer = self.query_proj(query_states)
+        tf.print("query: ", query_layer, query_layer.shape)
+        query_layer = self.transpose_for_scores(query_layer, self.num_attention_heads)
+        key_layer = self.key_proj(key_states)
+        tf.print("key: ", key_layer, key_layer.shape)
+        key_layer = self.transpose_for_scores(key_layer, self.num_attention_heads)
+        value_layer = self.value_proj(value_states)
+        tf.print("value: ", value_layer, value_layer.shape)
+        value_layer = self.transpose_for_scores(value_layer, self.num_attention_heads)
 
         rel_att = None
         # Take the dot product between "query" and "key" to get the raw attention scores.
