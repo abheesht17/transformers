@@ -747,6 +747,8 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         elif len(shape_list_pos) != 4:
             raise ValueError(f"Relative position ids must be of dim 2 or 3 or 4. {len(shape_list_pos)}")
 
+        tf.print("relative_pos--->: ", relative_pos, tf.shape(relative_pos))    
+            
         att_span = self.pos_ebd_size
         rel_embeddings = tf.expand_dims(
             rel_embeddings[self.pos_ebd_size - att_span : self.pos_ebd_size + att_span, :], 0
