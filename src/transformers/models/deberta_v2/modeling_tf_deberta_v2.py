@@ -342,13 +342,13 @@ class TFDebertaV2Encoder(tf.keras.layers.Layer):
                 self.max_relative_positions = config.max_position_embeddings
 
             self.position_buckets = getattr(config, "position_buckets", -1)
-            tf.print("self.position_buckets in TFDebertaV2Encoder: ", self.position_buckets)
+            #tf.print("self.position_buckets in TFDebertaV2Encoder: ", self.position_buckets)
             self.pos_ebd_size = self.max_relative_positions * 2
-            tf.print("self.pos_ebd_size in TFDebertaV2Encoder: ", self.pos_ebd_size)
+            #tf.print("self.pos_ebd_size in TFDebertaV2Encoder: ", self.pos_ebd_size)
 
             if self.position_buckets > 0:
                 self.pos_ebd_size = self.position_buckets * 2
-            tf.print("self.pos_ebd_size in TFDebertaV2Encoder: ", self.pos_ebd_size)
+            #tf.print("self.pos_ebd_size in TFDebertaV2Encoder: ", self.pos_ebd_size)
 
         self.norm_rel_ebd = [x.strip() for x in getattr(config, "norm_rel_ebd", "none").lower().split("|")]
 
@@ -359,7 +359,7 @@ class TFDebertaV2Encoder(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         if self.relative_attention:
-            tf.print("self.pos_ebd_size in TFDebertaV2Encoder build: ", self.pos_ebd_size)
+            #tf.print("self.pos_ebd_size in TFDebertaV2Encoder build: ", self.pos_ebd_size)
             self.rel_embeddings = self.add_weight(
                 name="rel_embeddings.weight",
                 shape=[self.pos_ebd_size, self.config.hidden_size],
@@ -689,13 +689,13 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         #tf.print("scale factor: ", scale_factor)
         scale = tf.math.sqrt(tf.cast(shape_list(query_layer)[-1] * scale_factor, tf.float32))
         attention_scores = tf.matmul(query_layer, tf.transpose(key_layer, [0, 2, 1])) / scale
-        tf.print("----------------->attention_scores: ", attention_scores, attention_scores.shape)
+        # tf.print("----------------->attention_scores: ", attention_scores, attention_scores.shape)
         if self.relative_attention:
             #tf.print("rel embeddings before do: ", rel_embeddings, rel_embeddings.shape)
             rel_embeddings = self.pos_dropout(rel_embeddings)
             #tf.print("rel embeddings after do: ", rel_embeddings, rel_embeddings.shape)
             rel_att = self.disentangled_att_bias(query_layer, key_layer, relative_pos, rel_embeddings, scale_factor)
-            tf.print("rel_att: ", rel_att, rel_att.shape)
+            #tf.print("rel_att: ", rel_att, rel_att.shape)
 
         if rel_att is not None:
             attention_scores = attention_scores + rel_att
@@ -703,10 +703,13 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
             attention_scores,
             (-1, self.num_attention_heads, shape_list(attention_scores)[-2], shape_list(attention_scores)[-1]),
         )
+        tf.print("attention_scores 1: ", attention_scores, tf.shape(attention_scores))
 
         # bsz x height x length x dimension
         attention_probs = self.softmax(attention_scores, attention_mask)
+        tf.print("attention_scores 2: ", attention_scores, tf.shape(attention_scores))
         attention_probs = self.dropout(attention_probs, training=training)
+        tf.print("attention_scores 3: ", attention_scores, tf.shape(attention_scores))
         context_layer = tf.matmul(
             tf.reshape(attention_probs, [-1, shape_list(attention_probs)[-2], shape_list(attention_probs)[-1]]),
             value_layer,
@@ -747,7 +750,7 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         elif len(shape_list_pos) != 4:
             raise ValueError(f"Relative position ids must be of dim 2 or 3 or 4. {len(shape_list_pos)}")
 
-        tf.print("relative_pos--->: ", relative_pos, tf.shape(relative_pos))    
+        #tf.print("relative_pos--->: ", relative_pos, tf.shape(relative_pos))    
             
         att_span = self.pos_ebd_size
         rel_embeddings = tf.expand_dims(
@@ -782,11 +785,11 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         if "c2p" in self.pos_att_type:
             scale = tf.math.sqrt(tf.cast(shape_list(pos_key_layer)[-1] * scale_factor, tf.float32))
             c2p_att = tf.matmul(query_layer, tf.transpose(pos_key_layer, [0, 2, 1]))
-            tf.print("pre c2p_att: ", c2p_att, c2p_att.shape)
+            #tf.print("pre c2p_att: ", c2p_att, c2p_att.shape)
             c2p_pos = tf.clip_by_value(relative_pos + att_span, 0, att_span * 2 - 1)
-            tf.print("-------------------------------------------------------->: ", shape_list(query_layer))
-            tf.print("-------------------------------------------------------->: ", shape_list(key_layer))
-            tf.print("-------------------------------------------------------->: ", shape_list(relative_pos))
+            #tf.print("-------------------------------------------------------->: ", shape_list(query_layer))
+            #tf.print("-------------------------------------------------------->: ", shape_list(key_layer))
+            #tf.print("-------------------------------------------------------->: ", shape_list(relative_pos))
             c2p_att = take_along_axis(
                 c2p_att,
                 tf.broadcast_to(
@@ -813,7 +816,7 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
             p2c_pos = tf.clip_by_value(-r_pos + att_span, 0, att_span * 2 - 1)
 
             p2c_att = tf.matmul(key_layer, tf.transpose(pos_query_layer, [0, 2, 1]))
-            tf.print("pre p2c_att: ", p2c_att, p2c_att.shape)
+            #tf.print("pre p2c_att: ", p2c_att, p2c_att.shape)
             p2c_att = tf.transpose(
                 take_along_axis(
                     p2c_att,
