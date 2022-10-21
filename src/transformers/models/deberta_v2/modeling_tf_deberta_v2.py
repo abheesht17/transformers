@@ -686,11 +686,15 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
             scale_factor += 1
         if "p2c" in self.pos_att_type:
             scale_factor += 1
+        tf.print("scale factor: ", scale_factor)
         scale = tf.math.sqrt(tf.cast(shape_list(query_layer)[-1] * scale_factor, tf.float32))
         attention_scores = tf.matmul(query_layer, tf.transpose(key_layer, [0, 2, 1])) / scale
         if self.relative_attention:
+            tf.print("rel embeddings before do: ", rel_embeddings, rel_embeddings.shape)
             rel_embeddings = self.pos_dropout(rel_embeddings)
+            tf.print("rel embeddings after do: ", rel_embeddings, rel_embeddings.shape)
             rel_att = self.disentangled_att_bias(query_layer, key_layer, relative_pos, rel_embeddings, scale_factor)
+            tf.print("rel_att: ", rel_att, rel_att.shape)
 
         if rel_att is not None:
             attention_scores = attention_scores + rel_att
