@@ -94,7 +94,7 @@ class TFDebertaV2XSoftmax(tf.keras.layers.Layer):
         self.axis = axis
 
     def call(self, inputs: tf.Tensor, mask: tf.Tensor):
-
+        tf.print("MASKKKKKK--->", mask, mask.shape)
         rmask = tf.logical_not(tf.cast(mask, tf.bool))
         output = tf.where(rmask, float("-inf"), inputs)
         output = stable_softmax(output, self.axis)
