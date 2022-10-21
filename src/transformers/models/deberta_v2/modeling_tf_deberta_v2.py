@@ -714,6 +714,7 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
             tf.reshape(attention_probs, [-1, shape_list(attention_probs)[-2], shape_list(attention_probs)[-1]]),
             value_layer,
         )
+        tf.print("context_layer (1): ", context_layer, tf.shape(context_layer))
         context_layer = tf.transpose(
             tf.reshape(
                 context_layer,
@@ -721,6 +722,7 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
             ),
             [0, 2, 1, 3],
         )
+        tf.print("context_layer (2): ", context_layer, tf.shape(context_layer))
         # Set the final dimension here explicitly.
         # Calling tf.reshape(context_layer, (*context_layer_shape[:-2], -1)) raises an error when executing
         # the model in graph mode as context_layer is reshaped to (None, 7, None) and Dense layer in TFDebertaV2SelfOutput
@@ -728,7 +730,7 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         context_layer_shape = shape_list(context_layer)
         new_context_layer_shape = context_layer_shape[:-2] + [context_layer_shape[-2] * context_layer_shape[-1]]
         context_layer = tf.reshape(context_layer, new_context_layer_shape)
-        tf.print("HELLO context_layer: ", context_layer, tf.shape(context_layer))
+        tf.print("context_layer (3): ", context_layer, tf.shape(context_layer))
         outputs = (context_layer, attention_probs) if output_attentions else (context_layer,)
         return outputs
 
