@@ -728,6 +728,7 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         context_layer_shape = shape_list(context_layer)
         new_context_layer_shape = context_layer_shape[:-2] + [context_layer_shape[-2] * context_layer_shape[-1]]
         context_layer = tf.reshape(context_layer, new_context_layer_shape)
+        tf.print("HELLO context_layer: ", context_layer, tf.shape(context_layer))
         outputs = (context_layer, attention_probs) if output_attentions else (context_layer,)
         return outputs
 
