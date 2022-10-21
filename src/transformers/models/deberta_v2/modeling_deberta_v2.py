@@ -14,6 +14,8 @@
 # limitations under the License.
 """ PyTorch DeBERTa-v2 model."""
 
+blah = 0
+
 from collections.abc import Sequence
 from typing import Optional, Tuple, Union
 
@@ -636,6 +638,7 @@ def pos_dynamic_expand(pos_index, p2c_att, key_layer):
     return pos_index.expand(p2c_att.size()[:2] + (pos_index.size(-2), key_layer.size(-2)))
 
 
+
 class DisentangledSelfAttention(nn.Module):
     """
     Disentangled self-attention module
@@ -761,6 +764,10 @@ class DisentangledSelfAttention(nn.Module):
         # bsz x height x length x dimension
         attention_probs = XSoftmax.apply(attention_scores, attention_mask, -1)
         attention_probs = self.dropout(attention_probs)
+        with open(f'test_attn_probs_{blah}.npy', 'wb') as f:
+            np.save(f, attention_probs.detach().numpy())
+            blah += 1
+        
         context_layer = torch.bmm(
             attention_probs.view(-1, attention_probs.size(-2), attention_probs.size(-1)), value_layer
         )
