@@ -15,6 +15,7 @@
 """ PyTorch DeBERTa-v2 model."""
 
 blah = 0
+blah1 = 0
 
 from collections.abc import Sequence
 from typing import Optional, Tuple, Union
@@ -773,11 +774,17 @@ class DisentangledSelfAttention(nn.Module):
         context_layer = torch.bmm(
             attention_probs.view(-1, attention_probs.size(-2), attention_probs.size(-1)), value_layer
         )
+
         context_layer = (
             context_layer.view(-1, self.num_attention_heads, context_layer.size(-2), context_layer.size(-1))
             .permute(0, 2, 1, 3)
             .contiguous()
         )
+        proxy_blah = globals()["blah1"]
+        with open(f'test_cl_{proxy_blah}.npy', 'wb') as f:
+            np.save(f, context_layer.detach().numpy())
+            globals()["blah1"] += 1
+
         new_context_layer_shape = context_layer.size()[:-2] + (-1,)
         context_layer = context_layer.view(new_context_layer_shape)
         if output_attentions:
