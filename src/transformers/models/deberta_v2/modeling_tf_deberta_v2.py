@@ -707,9 +707,9 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
 
         # bsz x height x length x dimension
         attention_probs = self.softmax(attention_scores, attention_mask)
-        tf.print("attention_scores 2: ", attention_scores, tf.shape(attention_scores))
+        # tf.print("attention_scores 2: ", attention_scores, tf.shape(attention_scores))
         attention_probs = self.dropout(attention_probs, training=training)
-        tf.print("attention_scores 3: ", attention_scores, tf.shape(attention_scores))
+        tf.print("attention_scores 3: ", attention_probs, tf.shape(attention_probs))
         context_layer = tf.matmul(
             tf.reshape(attention_probs, [-1, shape_list(attention_probs)[-2], shape_list(attention_probs)[-1]]),
             value_layer,
