@@ -689,6 +689,7 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
         tf.print("scale factor: ", scale_factor)
         scale = tf.math.sqrt(tf.cast(shape_list(query_layer)[-1] * scale_factor, tf.float32))
         attention_scores = tf.matmul(query_layer, tf.transpose(key_layer, [0, 2, 1])) / scale
+        tf.print("attention_scores: ", attention_scores, attention_scores.shape)
         if self.relative_attention:
             tf.print("rel embeddings before do: ", rel_embeddings, rel_embeddings.shape)
             rel_embeddings = self.pos_dropout(rel_embeddings)
