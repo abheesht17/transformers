@@ -765,6 +765,7 @@ class DisentangledSelfAttention(nn.Module):
         attention_probs = XSoftmax.apply(attention_scores, attention_mask, -1)
         attention_probs = self.dropout(attention_probs)
         proxy_blah = globals()["blah"]
+        import numpy as np
         with open(f'test_attn_probs_{proxy_blah}.npy', 'wb') as f:
             np.save(f, attention_probs.detach().numpy())
             globals()["blah"] += 1
