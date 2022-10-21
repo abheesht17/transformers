@@ -782,6 +782,9 @@ class TFDebertaV2DisentangledSelfAttention(tf.keras.layers.Layer):
             c2p_att = tf.matmul(query_layer, tf.transpose(pos_key_layer, [0, 2, 1]))
             tf.print("pre c2p_att: ", c2p_att, c2p_att.shape)
             c2p_pos = tf.clip_by_value(relative_pos + att_span, 0, att_span * 2 - 1)
+            tf.print("-------------------------------------------------------->: ", shape_list(query_layer))
+            tf.print("-------------------------------------------------------->: ", shape_list(key_layer))
+            tf.print("-------------------------------------------------------->: ", shape_list(relative_pos))
             c2p_att = take_along_axis(
                 c2p_att,
                 tf.broadcast_to(
