@@ -14,8 +14,8 @@
 # limitations under the License.
 """ PyTorch DeBERTa-v2 model."""
 
-blah = 0
-blah1 = 0
+# blah = 0
+# blah1 = 0
 
 from collections.abc import Sequence
 from typing import Optional, Tuple, Union
@@ -295,6 +295,7 @@ class DebertaV2SelfOutput(nn.Module):
 
     def forward(self, hidden_states, input_tensor):
         hidden_states = self.dense(hidden_states)
+        print("cl after dense layer: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
         return hidden_states
@@ -765,11 +766,11 @@ class DisentangledSelfAttention(nn.Module):
         # bsz x height x length x dimension
         attention_probs = XSoftmax.apply(attention_scores, attention_mask, -1)
         attention_probs = self.dropout(attention_probs)
-        proxy_blah = globals()["blah"]
-        import numpy as np
-        with open(f'test_attn_probs_{proxy_blah}.npy', 'wb') as f:
-            np.save(f, attention_probs.detach().numpy())
-            globals()["blah"] += 1
+#         proxy_blah = globals()["blah"]
+#         import numpy as np
+#         with open(f'test_attn_probs_{proxy_blah}.npy', 'wb') as f:
+#             np.save(f, attention_probs.detach().numpy())
+#             globals()["blah"] += 1
         
         context_layer = torch.bmm(
             attention_probs.view(-1, attention_probs.size(-2), attention_probs.size(-1)), value_layer
@@ -780,13 +781,14 @@ class DisentangledSelfAttention(nn.Module):
             .permute(0, 2, 1, 3)
             .contiguous()
         )
-        proxy_blah = globals()["blah1"]
-        with open(f'test_cl_{proxy_blah}.npy', 'wb') as f:
-            np.save(f, context_layer.detach().numpy())
-            globals()["blah1"] += 1
+#         proxy_blah = globals()["blah1"]
+#         with open(f'test_cl_{proxy_blah}.npy', 'wb') as f:
+#             np.save(f, context_layer.detach().numpy())
+#             globals()["blah1"] += 1
 
         new_context_layer_shape = context_layer.size()[:-2] + (-1,)
         context_layer = context_layer.view(new_context_layer_shape)
+        print("cl before dense: ", context_layer, context_layer.shape)
         if output_attentions:
             return (context_layer, attention_probs)
         else:
