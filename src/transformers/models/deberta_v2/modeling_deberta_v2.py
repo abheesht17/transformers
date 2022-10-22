@@ -16,7 +16,7 @@
 
 # blah = 0
 ctr1 = 0
-ctr1 = 0
+ctr2 = 0
 
 from collections.abc import Sequence
 from typing import Optional, Tuple, Union
