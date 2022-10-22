@@ -15,7 +15,8 @@
 """ PyTorch DeBERTa-v2 model."""
 
 # blah = 0
-# blah1 = 0
+ctr1 = 0
+ctr1 = 0
 
 from collections.abc import Sequence
 from typing import Optional, Tuple, Union
@@ -398,10 +399,20 @@ class DebertaV2Layer(nn.Module):
             rel_embeddings=rel_embeddings,
         )
         print("attn after LN: ", attention_output[0], attention_output[0].shape)
+        proxy_ctr = globals()["ctr1"]
+        import numpy as np
+        with open(f"/content/drive/MyDrive/attn_{proxy_ctr}", "wb") as f:
+            np.save(f, attention_output[0].detach().numpy())
+            globals()["ctr1"] += 1
         if output_attentions:
             attention_output, att_matrix = attention_output
         intermediate_output = self.intermediate(attention_output)
         print("intermediate_output after intermediate: ", intermediate_output,intermediate_output.shape)
+        proxy_ctr = globals()["ctr2"]
+        import numpy as np
+        with open(f"/content/drive/MyDrive/attn_{proxy_ctr}", "wb") as f:
+            np.save(f, attention_output[0].detach().numpy())
+            globals()["ctr2"] += 1
         layer_output = self.output(intermediate_output, attention_output)
         if output_attentions:
             return (layer_output, att_matrix)
