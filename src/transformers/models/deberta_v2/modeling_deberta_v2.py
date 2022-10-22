@@ -401,7 +401,7 @@ class DebertaV2Layer(nn.Module):
         print("attn after LN: ", attention_output[0], attention_output[0].shape)
         proxy_ctr = globals()["ctr1"]
         import numpy as np
-        with open(f"/content/drive/MyDrive/attn_{proxy_ctr}", "wb") as f:
+        with open(f"/content/attn_{proxy_ctr}.npy", "wb") as f:
             np.save(f, attention_output[0].detach().numpy())
             globals()["ctr1"] += 1
         if output_attentions:
@@ -410,8 +410,8 @@ class DebertaV2Layer(nn.Module):
         print("intermediate_output after intermediate: ", intermediate_output,intermediate_output.shape)
         proxy_ctr = globals()["ctr2"]
         import numpy as np
-        with open(f"/content/drive/MyDrive/attn_{proxy_ctr}", "wb") as f:
-            np.save(f, attention_output[0].detach().numpy())
+        with open(f"/content/inter_{proxy_ctr}.npy", "wb") as f:
+            np.save(f, intermediate_output.detach().numpy())
             globals()["ctr2"] += 1
         layer_output = self.output(intermediate_output, attention_output)
         if output_attentions:
