@@ -295,7 +295,7 @@ class DebertaV2SelfOutput(nn.Module):
 
     def forward(self, hidden_states, input_tensor):
         hidden_states = self.dense(hidden_states)
-        print("cl after dense layer: ", hidden_states, hidden_states.shape)
+        # print("cl after dense layer: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
         return hidden_states
@@ -366,7 +366,9 @@ class DebertaV2Output(nn.Module):
     def forward(self, hidden_states, input_tensor):
         hidden_states = self.dense(hidden_states)
         hidden_states = self.dropout(hidden_states)
+        print("x after dense: ", hidden_states, hidden_states.shape)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
+        print("x after LN: ", hidden_states, hidden_states.shape)
         return hidden_states
 
 
@@ -395,9 +397,11 @@ class DebertaV2Layer(nn.Module):
             relative_pos=relative_pos,
             rel_embeddings=rel_embeddings,
         )
+        print("attn after LN: ", attention_output[0], attention_output[0].shape)
         if output_attentions:
             attention_output, att_matrix = attention_output
         intermediate_output = self.intermediate(attention_output)
+        print("intermediate_output after intermediate: ", intermediate_output,intermediate_output.shape)
         layer_output = self.output(intermediate_output, attention_output)
         if output_attentions:
             return (layer_output, att_matrix)
@@ -781,14 +785,14 @@ class DisentangledSelfAttention(nn.Module):
             .permute(0, 2, 1, 3)
             .contiguous()
         )
-#         proxy_blah = globals()["blah1"]
-#         with open(f'test_cl_{proxy_blah}.npy', 'wb') as f:
-#             np.save(f, context_layer.detach().numpy())
-#             globals()["blah1"] += 1
+        #proxy_blah = globals()["blah1"]
+        #with open(f'test_cl_{proxy_blah}.npy', 'wb') as f:
+        #    np.save(f, context_layer.detach().numpy())
+        #    globals()["blah1"] += 1
 
         new_context_layer_shape = context_layer.size()[:-2] + (-1,)
         context_layer = context_layer.view(new_context_layer_shape)
-        print("cl before dense: ", context_layer, context_layer.shape)
+        # print("cl before dense: ", context_layer, context_layer.shape)
         if output_attentions:
             return (context_layer, attention_probs)
         else:
