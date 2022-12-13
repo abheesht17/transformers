@@ -15,8 +15,8 @@
 """ PyTorch DeBERTa-v2 model."""
 
 # blah = 0
-ctr1 = 0
-ctr2 = 0
+# ctr1 = 0
+# ctr2 = 0
 
 from collections.abc import Sequence
 from typing import Optional, Tuple, Union
@@ -367,9 +367,9 @@ class DebertaV2Output(nn.Module):
     def forward(self, hidden_states, input_tensor):
         hidden_states = self.dense(hidden_states)
         hidden_states = self.dropout(hidden_states)
-        print("x after dense: ", hidden_states, hidden_states.shape)
+        #print("x after dense: ", hidden_states, hidden_states.shape)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
-        print("x after LN: ", hidden_states, hidden_states.shape)
+        #print("x after LN: ", hidden_states, hidden_states.shape)
         return hidden_states
 
 
@@ -398,21 +398,21 @@ class DebertaV2Layer(nn.Module):
             relative_pos=relative_pos,
             rel_embeddings=rel_embeddings,
         )
-        print("attn after LN: ", attention_output[0], attention_output[0].shape)
-        proxy_ctr = globals()["ctr1"]
-        import numpy as np
-        with open(f"/content/attn_{proxy_ctr}.npy", "wb") as f:
-            np.save(f, attention_output[0].detach().numpy())
-            globals()["ctr1"] += 1
+        #print("attn after LN: ", attention_output[0], attention_output[0].shape)
+        #proxy_ctr = globals()["ctr1"]
+        #import numpy as np
+        #with open(f"/content/attn_{proxy_ctr}.npy", "wb") as f:
+        #    np.save(f, attention_output[0].detach().numpy())
+        #    globals()["ctr1"] += 1
         if output_attentions:
             attention_output, att_matrix = attention_output
         intermediate_output = self.intermediate(attention_output)
-        print("intermediate_output after intermediate: ", intermediate_output,intermediate_output.shape)
-        proxy_ctr = globals()["ctr2"]
-        import numpy as np
-        with open(f"/content/inter_{proxy_ctr}.npy", "wb") as f:
-            np.save(f, intermediate_output.detach().numpy())
-            globals()["ctr2"] += 1
+        #print("intermediate_output after intermediate: ", intermediate_output,intermediate_output.shape)
+        #proxy_ctr = globals()["ctr2"]
+        #import numpy as np
+        #with open(f"/content/inter_{proxy_ctr}.npy", "wb") as f:
+        #    np.save(f, intermediate_output.detach().numpy())
+        #    globals()["ctr2"] += 1
         layer_output = self.output(intermediate_output, attention_output)
         if output_attentions:
             return (layer_output, att_matrix)
@@ -778,8 +778,10 @@ class DisentangledSelfAttention(nn.Module):
             -1, self.num_attention_heads, attention_scores.size(-2), attention_scores.size(-1)
         )
 
+        print("attention_scores before softmax: ", attention_scores, attention_scores.shape)
         # bsz x height x length x dimension
         attention_probs = XSoftmax.apply(attention_scores, attention_mask, -1)
+        print("attention_scores after softmax: ", attention_probs, attention_probs.shape)
         attention_probs = self.dropout(attention_probs)
 #         proxy_blah = globals()["blah"]
 #         import numpy as np
