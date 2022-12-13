@@ -135,7 +135,7 @@ class XSoftmax(torch.autograd.Function):
     @staticmethod
     def forward(self, input, mask, dim):
         self.dim = dim
-        print("MASK: ", mask, mask.shape)
+        # print("MASK: ", mask, mask.shape)
         rmask = ~(mask.to(torch.bool))
 
         output = input.masked_fill(rmask, torch.tensor(torch.finfo(input.dtype).min))
@@ -525,6 +525,7 @@ class DebertaV2Encoder(nn.Module):
             input_mask = attention_mask
         else:
             input_mask = (attention_mask.sum(-2) > 0).byte()
+        print("raw attention_mask: ", attention_mask, attention_mask.shape)
         attention_mask = self.get_attention_mask(attention_mask)
         relative_pos = self.get_rel_pos(hidden_states, query_states, relative_pos)
 
