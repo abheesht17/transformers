@@ -416,6 +416,7 @@ class DebertaV2Layer(nn.Module):
         #    np.save(f, intermediate_output.detach().numpy())
         #    globals()["ctr2"] += 1
         layer_output = self.output(intermediate_output, attention_output)
+        print("layer_output: ", layer_output, layer_output.shape)
         if output_attentions:
             return (layer_output, att_matrix)
         else:
