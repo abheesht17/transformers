@@ -298,7 +298,7 @@ class DebertaV2SelfOutput(nn.Module):
 
     def forward(self, hidden_states, input_tensor):
         hidden_states = self.dense(hidden_states)
-        # print("cl after dense layer: ", hidden_states, hidden_states.shape)
+        print("cl after dense layer: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
         return hidden_states
@@ -334,7 +334,7 @@ class DebertaV2Attention(nn.Module):
         if query_states is None:
             query_states = hidden_states
         attention_output = self.output(self_output, query_states)
-        print("attn_output: ", attention_output, attention_output.shape)
+        # print("attn_output: ", attention_output, attention_output.shape)
         if output_attentions:
             return (attention_output, att_matrix)
         else:
