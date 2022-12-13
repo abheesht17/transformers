@@ -334,7 +334,7 @@ class DebertaV2Attention(nn.Module):
         if query_states is None:
             query_states = hidden_states
         attention_output = self.output(self_output, query_states)
-
+        print("attn_output: ", attention_output, attention_output.shape)
         if output_attentions:
             return (attention_output, att_matrix)
         else:
@@ -416,7 +416,7 @@ class DebertaV2Layer(nn.Module):
         #    np.save(f, intermediate_output.detach().numpy())
         #    globals()["ctr2"] += 1
         layer_output = self.output(intermediate_output, attention_output)
-        print("layer_output: ", layer_output, layer_output.shape)
+        # print("layer_output: ", layer_output, layer_output.shape)
         if output_attentions:
             return (layer_output, att_matrix)
         else:
@@ -782,10 +782,10 @@ class DisentangledSelfAttention(nn.Module):
             -1, self.num_attention_heads, attention_scores.size(-2), attention_scores.size(-1)
         )
 
-        print("attention_scores before softmax: ", attention_scores, attention_scores.shape)
+        # print("attention_scores before softmax: ", attention_scores, attention_scores.shape)
         # bsz x height x length x dimension
         attention_probs = XSoftmax.apply(attention_scores, attention_mask, -1)
-        print("attention_scores after softmax: ", attention_probs, attention_probs.shape)
+        # print("attention_scores after softmax: ", attention_probs, attention_probs.shape)
         attention_probs = self.dropout(attention_probs)
 #         proxy_blah = globals()["blah"]
 #         import numpy as np
