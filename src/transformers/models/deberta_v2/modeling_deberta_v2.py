@@ -135,6 +135,7 @@ class XSoftmax(torch.autograd.Function):
     @staticmethod
     def forward(self, input, mask, dim):
         self.dim = dim
+        print("MASK: ", mask, mask.shape)
         rmask = ~(mask.to(torch.bool))
 
         output = input.masked_fill(rmask, torch.tensor(torch.finfo(input.dtype).min))
