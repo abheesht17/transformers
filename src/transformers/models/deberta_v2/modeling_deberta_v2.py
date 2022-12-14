@@ -392,6 +392,7 @@ class DebertaV2Layer(nn.Module):
         rel_embeddings=None,
         output_attentions=False,
     ):
+        print("hidden_states: ", hidden_states, hidden_states.shape)
         attention_output = self.attention(
             hidden_states,
             attention_mask,
