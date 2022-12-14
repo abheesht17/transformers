@@ -298,7 +298,7 @@ class DebertaV2SelfOutput(nn.Module):
 
     def forward(self, hidden_states, input_tensor):
         hidden_states = self.dense(hidden_states)
-        print("cl after dense layer: ", hidden_states, hidden_states.shape)
+        # print("cl after dense layer: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
         return hidden_states
@@ -865,6 +865,7 @@ class DisentangledSelfAttention(nn.Module):
                 dim=-1,
                 index=c2p_pos.squeeze(0).expand([query_layer.size(0), query_layer.size(1), relative_pos.size(-1)]),
             )
+            print("c2p: ", c2p_att / torch.tensor(scale, dtype=c2p_att.dtype), c2p_att.shape)
             score += c2p_att / torch.tensor(scale, dtype=c2p_att.dtype)
 
         # position->content
@@ -888,6 +889,7 @@ class DisentangledSelfAttention(nn.Module):
                 dim=-1,
                 index=p2c_pos.squeeze(0).expand([query_layer.size(0), key_layer.size(-2), key_layer.size(-2)]),
             ).transpose(-1, -2)
+            print("p2c: ", p2c_attn / torch.tensor(scale, dtype=p2c_att.dtype), p2c_attn.shape)
             score += p2c_att / torch.tensor(scale, dtype=p2c_att.dtype)
 
         return score
