@@ -816,6 +816,9 @@ class DisentangledSelfAttention(nn.Module):
             return context_layer
 
     def disentangled_attention_bias(self, query_layer, key_layer, relative_pos, rel_embeddings, scale_factor):
+        print("query: ", query_layer, query_layer.shape)
+        print("key: ", key_layer, key_layer.shape)
+        print("rel: ", rel_embeddings, rel_embeddings.shape)
         if relative_pos is None:
             q = query_layer.size(-2)
             relative_pos = build_relative_position(
