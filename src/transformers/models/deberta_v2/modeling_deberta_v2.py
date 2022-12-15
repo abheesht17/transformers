@@ -298,7 +298,7 @@ class DebertaV2SelfOutput(nn.Module):
 
     def forward(self, hidden_states, input_tensor):
         hidden_states = self.dense(hidden_states)
-        # print("cl after dense layer: ", hidden_states, hidden_states.shape)
+        print("cl after dense layer: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
         print("after attn ln: ", hidden_states, hidden_states.shape)
