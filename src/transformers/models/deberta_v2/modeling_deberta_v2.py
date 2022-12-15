@@ -297,12 +297,12 @@ class DebertaV2SelfOutput(nn.Module):
         self.dropout = StableDropout(config.hidden_dropout_prob)
 
     def forward(self, hidden_states, input_tensor):
-        print("THIS IS IMP: ", input_tensor)
+        #print("THIS IS IMP: ", input_tensor)
         hidden_states = self.dense(hidden_states)
-        print("cl after dense layer: ", hidden_states, hidden_states.shape)
+        #print("cl after dense layer: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
-        print("after attn ln: ", hidden_states, hidden_states.shape)
+        #print("after attn ln: ", hidden_states, hidden_states.shape)
         return hidden_states
 
 
@@ -357,6 +357,7 @@ class DebertaV2Intermediate(nn.Module):
         hidden_states = self.dense(hidden_states)
         print("after intermediate: ", hidden_states, hidden_states.shape)
         hidden_states = self.intermediate_act_fn(hidden_states)
+        print("after intermediate act: ", hidden_states, hidden_states.shape)
         
         return hidden_states
 
@@ -372,7 +373,7 @@ class DebertaV2Output(nn.Module):
 
     def forward(self, hidden_states, input_tensor):
         hidden_states = self.dense(hidden_states)
-        print("after op dense: ", hidden_states, hidden_states.shape)
+        #print("after op dense: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
         #print("x after dense: ", hidden_states, hidden_states.shape)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
@@ -397,7 +398,7 @@ class DebertaV2Layer(nn.Module):
         rel_embeddings=None,
         output_attentions=False,
     ):
-        print("hidden_states: ", hidden_states, hidden_states.shape)
+        #print("hidden_states: ", hidden_states, hidden_states.shape)
         attention_output = self.attention(
             hidden_states,
             attention_mask,
@@ -874,7 +875,7 @@ class DisentangledSelfAttention(nn.Module):
                 dim=-1,
                 index=c2p_pos.squeeze(0).expand([query_layer.size(0), query_layer.size(1), relative_pos.size(-1)]),
             )
-            print("c2p: ", c2p_att / torch.tensor(scale, dtype=c2p_att.dtype), c2p_att.shape)
+            #print("c2p: ", c2p_att / torch.tensor(scale, dtype=c2p_att.dtype), c2p_att.shape)
             score += c2p_att / torch.tensor(scale, dtype=c2p_att.dtype)
 
         # position->content
@@ -898,7 +899,7 @@ class DisentangledSelfAttention(nn.Module):
                 dim=-1,
                 index=p2c_pos.squeeze(0).expand([query_layer.size(0), key_layer.size(-2), key_layer.size(-2)]),
             ).transpose(-1, -2)
-            print("p2c: ", p2c_att / torch.tensor(scale, dtype=p2c_att.dtype), p2c_att.shape)
+            #print("p2c: ", p2c_att / torch.tensor(scale, dtype=p2c_att.dtype), p2c_att.shape)
             score += p2c_att / torch.tensor(scale, dtype=p2c_att.dtype)
 
         return score
