@@ -301,6 +301,7 @@ class DebertaV2SelfOutput(nn.Module):
         # print("cl after dense layer: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
+        print("after attn ln: ", hidden_states, hidden_states.shape)
         return hidden_states
 
 
@@ -354,6 +355,7 @@ class DebertaV2Intermediate(nn.Module):
     def forward(self, hidden_states: torch.Tensor) -> torch.Tensor:
         hidden_states = self.dense(hidden_states)
         hidden_states = self.intermediate_act_fn(hidden_states)
+        print("after intermediate: ", hidden_states, hidden_states.shape)
         return hidden_states
 
 
@@ -368,6 +370,7 @@ class DebertaV2Output(nn.Module):
 
     def forward(self, hidden_states, input_tensor):
         hidden_states = self.dense(hidden_states)
+        print("after op dense: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
         #print("x after dense: ", hidden_states, hidden_states.shape)
         hidden_states = self.LayerNorm(hidden_states + input_tensor)
@@ -817,9 +820,9 @@ class DisentangledSelfAttention(nn.Module):
             return context_layer
 
     def disentangled_attention_bias(self, query_layer, key_layer, relative_pos, rel_embeddings, scale_factor):
-        print("query: ", query_layer, query_layer.shape)
-        print("key: ", key_layer, key_layer.shape)
-        print("rel: ", rel_embeddings, rel_embeddings.shape)
+        # print("query: ", query_layer, query_layer.shape)
+        # print("key: ", key_layer, key_layer.shape)
+        # print("rel: ", rel_embeddings, rel_embeddings.shape)
         if relative_pos is None:
             q = query_layer.size(-2)
             relative_pos = build_relative_position(
