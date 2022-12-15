@@ -297,6 +297,7 @@ class DebertaV2SelfOutput(nn.Module):
         self.dropout = StableDropout(config.hidden_dropout_prob)
 
     def forward(self, hidden_states, input_tensor):
+        print("THIS IS IMP: ", input_tensor)
         hidden_states = self.dense(hidden_states)
         print("cl after dense layer: ", hidden_states, hidden_states.shape)
         hidden_states = self.dropout(hidden_states)
