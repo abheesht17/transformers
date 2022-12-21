@@ -86,7 +86,9 @@ class ContextPooler(nn.Module):
         super().__init__()
         self.dense = nn.Linear(config.pooler_hidden_size, config.pooler_hidden_size)
         self.dropout = StableDropout(config.pooler_dropout)
+        print("1st dropout: ", config.pooler_dropout)
         self.config = config
+        print("hidden act.: ", self.config.pooler_hidden_act)
 
     def forward(self, hidden_states):
         # We "pool" the model by simply taking the hidden state corresponding
