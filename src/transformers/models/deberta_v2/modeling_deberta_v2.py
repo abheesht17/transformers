@@ -1343,6 +1343,7 @@ class DebertaV2ForSequenceClassification(DebertaV2PreTrainedModel):
         self.classifier = nn.Linear(output_dim, num_labels)
         drop_out = getattr(config, "cls_dropout", None)
         drop_out = self.config.hidden_dropout_prob if drop_out is None else drop_out
+        print("2nd dropout: ", drop_out)
         self.dropout = StableDropout(drop_out)
 
         # Initialize weights and apply final processing
