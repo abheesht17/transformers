@@ -211,13 +211,13 @@ class WhisperAttention(nn.Module):
                 f" {attn_weights.size()}"
             )
 
-        print("===>attention_mask:", attention_mask)
+        print("===>attention_mask,{self.is_decoder},{is_cross_attention}:", attention_mask)
         if attention_mask is not None:
             if attention_mask.size() != (bsz, 1, tgt_len, src_len):
                 raise ValueError(
                     f"Attention mask should be of size {(bsz, 1, tgt_len, src_len)}, but is {attention_mask.size()}"
                 )
-            print("===>attention_mask:", attention_mask.shape)
+            print(f"===>attention_mask,{self.is_decoder},{is_cross_attention}:", attention_mask.shape)
             attn_weights = attn_weights.view(bsz, self.num_heads, tgt_len, src_len) + attention_mask
             attn_weights = attn_weights.view(bsz * self.num_heads, tgt_len, src_len)
 
