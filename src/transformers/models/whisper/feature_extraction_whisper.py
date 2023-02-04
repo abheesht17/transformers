@@ -286,6 +286,7 @@ class WhisperFeatureExtractor(SequenceFeatureExtractor):
             and (isinstance(raw_speech[0], np.ndarray) or isinstance(raw_speech[0], (tuple, list)))
         )
         print("is_batched:", is_batched)
+        print("raw_speech:", raw_speech, type(raw_speech))
 
         if is_batched:
             raw_speech = [np.asarray([speech], dtype=np.float32).T for speech in raw_speech]
@@ -294,12 +295,15 @@ class WhisperFeatureExtractor(SequenceFeatureExtractor):
         elif isinstance(raw_speech, np.ndarray) and raw_speech.dtype is np.dtype(np.float64):
             raw_speech = raw_speech.astype(np.float32)
 
+            
+        print("raw_speech:", raw_speech, type(raw_speech))
         # always return batch
         if not is_batched:
             raw_speech = [np.asarray([raw_speech]).T]
+        print("raw_speech:", raw_speech, type(raw_speech))
 
         batched_speech = BatchFeature({"input_features": raw_speech})
-        print("batched_speech:", batched_speech)
+        print("batched_speech:", batched_speech, type(batched_speech))
 
         # convert into correct format for padding
 
@@ -312,7 +316,7 @@ class WhisperFeatureExtractor(SequenceFeatureExtractor):
         )
         # make sure list is in array format
         input_features = padded_inputs.get("input_features").transpose(2, 0, 1)
-        print("input_features:", input_features)
+        print("input_features:", input_features, input_features.shape)
 
         input_features = [self._np_extract_fbank_features(waveform) for waveform in input_features[0]]
         print("input_features:", input_features)
